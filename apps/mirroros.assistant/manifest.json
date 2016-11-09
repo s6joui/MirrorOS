@@ -1,0 +1,12 @@
+{
+	"name"    : "Super",
+	"package" : "mirroros.assistant",
+	"version" : "1.0",
+	"keywords": [ "pictures",
+		"picture",
+		"photos",
+		"images",
+		"instagram"
+	],
+	"color" : "#0077FF"
+}

@@ -1,0 +1,35 @@
+*{
+	marign:0;
+	padding:0;
+}
+
+body{
+	background:#000000;
+}
+
+video{
+	width:100%;
+	background:black;
+	position:fixed;
+	bottom:0px;
+}
+
+#yt-video{
+	z-index:-1;
+}
+
+#loader{
+	position:absolute;
+	bottom:100px;
+	left:0px;
+	width:100%;
+	text-align:center;
+	z-index:1000;
+}
+
+#thumbnail{
+	position:fixed;
+	bottom:0px;
+	z-index:999;
+}
+

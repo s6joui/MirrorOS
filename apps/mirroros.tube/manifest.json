@@ -1,0 +1,8 @@
+{
+  "name"    : "YouTube",
+  "package"	: "mirroros.tube",
+  "version" : "1.0",
+  "keywords": [ "youtube",
+				"video"],
+	"color" : "#aa0000"
+}

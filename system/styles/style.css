@@ -1,0 +1,225 @@
+*{
+	margin:0;
+	padding:0;
+}
+
+html{
+	height:100%;
+}
+
+body{
+	background:#000000;
+	color:white;
+	height:100%;
+}
+
+.appView{
+	background:#000000;
+	width:100%;
+	height:100%;
+}
+
+#infoBar{
+	font-family: Roboto,sans-serif;
+	width:100%;
+	text-align:center;
+	position:fixed;
+	top:0px;
+	background-color:rgba(0,0,0,0.5);
+	padding:45px 16px 16px 16px;
+	box-sizing:border-box;
+	transition: height 0.6s,padding 0.6s;
+	z-index:1000;
+}
+
+#resultText{
+	font-size:2em;
+}
+
+#resultText,#appNameText{
+	transition: font-size 1s, padding 1s;
+}
+
+.smallbar{	
+	height:40px !important;
+	padding:9px !important;
+}
+
+.smallbarText{
+	font-size: 1em !important;
+	font-weight:200;
+	display:inline;
+	padding: 0px 10px;
+}
+
+.leftBorder{
+	border-left:1px solid #eee;
+	padding: 0px 14px !important;
+}
+
+#info1{	
+	font-weight:bold;
+	position:absolute;
+	top:9px;
+	left:9px;
+}
+
+#clock{
+	font-weight:bold;
+	position:absolute;
+	top:9px;
+	right:9px;
+}
+
+#controlContainer{
+	position:fixed;
+	top: 35%;
+	width:100%;
+	text-align:center;
+}
+
+#content{
+	width:100%;
+	height:100%;
+	overflow:hidden;
+	text-align:center;
+}
+
+.actionButton{
+	width:70px;
+	height:70px;
+	padding:20px;
+	border-radius:50%;
+	background-color:#777;
+	transition:all 0.5s;
+	cursor:pointer;
+}
+
+.active,.actionButton:hover{
+	width:80px;
+	height:80px;
+	padding:20px;
+	background-color:#ffffff;
+}
+
+.hidden{
+	width:0px;
+	height:0px;
+	padding:0px;
+}
+
+#toast{
+	position:absolute;
+	top:50%;
+	left:50%;
+	transform:translate(-50%,-50%);
+	font-family: Roboto,sans-serif;
+	font-size:1.2em;
+	text-align:center;
+	padding:35px 25px;
+	box-sizing:border-box;
+	background:rgba(255,255,255,0.8);
+	color:#000;
+	width:40%;
+	border-radius:4px;
+	opacity:0;
+}
+
+#alertHolder{
+	position:fixed;
+	left:0;
+	top:0;
+	width:100%;
+}
+
+#alert{
+	position:fixed;
+	top:50%;
+	left:50%;
+	transform:translate(-50%,-50%);
+	font-family: Roboto,sans-serif;
+	text-align:center;
+	padding:12px;
+	background:#555;
+	border-radius:2px;
+	margin:0 auto;
+	max-width:460px;
+	min-height:200px;
+	min-width:350px;
+	box-shadow: 0px 0px 8px #000;
+	display:none;
+}
+
+#splash{
+	position:fixed;
+	top:0;
+	left:0;
+	background:#000;
+	z-index:500;
+	color:white;
+	opacity:1;
+	width:100%;
+	height:100%;
+}
+
+#splashTitle{
+	text-align:center;
+	font-family: Roboto,sans-serif;
+	font-weight:200 !important;
+	margin-top:35%;
+	animation-name: fadeIn;
+	animation-duration: 0.7s;
+	animation-fill-mode:forwards;
+}
+
+.sensorIndicator{
+	position:fixed;
+	bottom:180px;
+	width:80px;
+	height:80px;
+	border-radius:43px;
+	border:3px solid white;
+	opacity:0;
+	transition: opacity 0.3s;
+}
+
+.sensorIndicator .progress{
+	width:100%;
+	height:100%;
+	background:white;
+	border-radius:43px;
+	transition:transform 0.9s;
+	transform:scale(0);
+	opacity:0.5;
+}
+
+.sensorIndicator.animate{
+	opacity:1;
+}
+
+.sensorIndicator.animate .progress{
+	transform:scale(1);
+}
+
+.sensorIndicator.fail .progress{
+	background:#900;
+}
+
+.sensorIndicator.success .progress{
+	opacity:1;
+}
+
+#rightSensorIndicator{
+	right:0;
+}
+@keyframes grow {
+  from {transform:scale(0);}
+  to {transform:scale(1);}
+}
+@keyframes fadeIn {
+  from {transform:scale(0.6);opacity:0.5}
+  to {transform:scale(1.2);opacity:1}
+}
+@-webkit-keyframes fadeIn {
+  from {transform:scale(0.6);opacity:0.5}
+  to {transform:scale(1.2);opacity:1}

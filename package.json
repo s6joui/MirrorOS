@@ -1,0 +1,17 @@
+{
+	"name" : "MirrorOS",
+	"version" : "0.1.0",
+	"main" : "main.js",
+  	"scripts" : {
+    		"start": "./system/starter.sh"
+    	},
+	"dependencies" : {
+		"connect":"",
+		"serve-static":"",
+		"socket.io":"",
+		"q":"",
+		"unzip":"",
+		"ncp":"",
+		"electron":"^1.4.5"
+	}
+}

@@ -1,0 +1,207 @@
+*{
+	margin:0;
+	padding:0;
+	box-sizing: border-box;
+}
+
+html{
+	height:100%;
+}
+
+body{
+	background:white;
+	font-family: Roboto, Helvetica, sans-serif;
+	height:100%;
+}
+
+header{
+	box-shadow:0px -3px 10px;
+	text-align:left;
+	padding:0 25px;
+	min-height:60px;
+}
+header #title{
+	padding:16px 0;
+	float:left;
+}
+
+#headerButton{
+	float:right;
+	padding:0 14px;
+	margin-top:5px;
+	font-size: 2.5em;
+	border:1px solid #ddd;
+}
+
+#appGrid{
+	padding:10px;
+}
+
+.appIcon{
+	width:100px;
+	height:100px;
+	text-align:center;
+	float:left;
+	margin:6px 6px 12px 6px;
+	cursor:pointer;
+	-moz-user-select:none;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+.innerIcon{
+	width:80%;
+	height:80%;
+	margin:0 auto;
+	color:white;
+	font-size:5em;
+	font-weight:bold;
+	line-height:80px;
+	margin-bottom:5px;
+	border-radius:8px;
+	transition: all 0.5s;
+}
+
+#imageHeader{
+	height:250px;
+	width:100%;
+	background-repeat:no-repeat;
+	background-position:center;
+	background-size: contain;
+}
+
+button{
+	padding:10px;
+	font-size:1.6em;
+	min-width:100px;
+}
+
+#appView{
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background:#fff;
+	display:none;
+	transition:transform 0.3s,background-color 0.5s;
+}
+
+#appBar{
+	width:100%;
+	height:55px;
+	color:white;
+}
+
+#appMediaHeader{
+	width:100%;
+	height:35%;
+	background-size:cover;
+	background-repeat:no-repeat;
+	background-position: center;
+	position:relative;
+}
+
+.media-control{
+	float:left;
+	width:33%;
+	background-position:center;
+	height:100%;
+	background-repeat:no-repeat;
+	background-size: 30%;
+	display:none;
+}
+
+#headerTitle{
+	position:absolute;
+	text-align:center;
+	bottom:10px;
+	width: 100%;
+	color: white;
+	text-shadow: 0px 0px 5px black;
+	padding:0 10px;
+}
+
+#appTitle{
+	float:left;
+	padding:15px;
+	font-weight:bold;
+	font-size:1.2em;
+}
+
+#closeButton{
+	float:right;
+	padding:17px;
+	cursor:pointer;
+}
+
+.launchingApp{
+	font-size:0.2em;
+	border-radius: 0px !important;
+}
+
+.launchedApp{
+	position: absolute;
+	height: 40%;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	border-radius: 0px !important;
+}
+
+#appActions {
+	clear:both;
+}
+
+.actionButton{
+	border-bottom:1px solid #fff;
+	background: #f2f2f2;
+	width:100%;
+	font-size:1.4em;
+	outline:none;
+	padding:15x;
+}
+
+#mic-fab{
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	background: #999;
+	border-radius: 50px;
+	box-shadow: 0px 0px 5px #444;
+	transition:all 0.5s;
+	cursor:pointer;
+	width: 70px;
+	height:70px;
+	text-align:center;
+	z-index:500;
+}
+
+#mic-fab.active{
+	background: #900;
+}
+
+#mic-fab img{
+	width: 32px;
+	margin-top: 18px;
+}
+
+#voice-input{
+	position: fixed;
+	bottom: 29px;
+	right: 45px;
+	background:#eee;
+	border-radius:18px;
+	width:0%;
+	height:50px;
+	box-sizing:border-box;
+	padding:15px;
+	box-shadow: 0px 0px 5px #999;
+	opacity:0;
+	transition:all 0.5s;
+}
+
+#voice-input.active{
+	width:80%;
+	opacity:1;
+}

@@ -1,0 +1,86 @@
+*{
+  margin:0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  background: #000;
+  color:#fff;
+  font-family: 'Roboto Slab', serif;
+  overflow-x: hidden;
+}
+
+#progress{
+  width: 0%;
+  margin:0 auto;
+  margin-bottom: 10px;
+  height: 3px;
+  background-color: white;
+}
+
+.animate{
+  animation: progress 11s;
+  -webkit-animation: progress 11s;
+  animation-timing-function: linear;
+  -webkit-animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  -webkit-animation-fill-mode: forwards;
+}
+
+#container{
+  width: 100%;
+  transform:translateX(150%);
+  opacity: 0;
+  transition: transform 1s,opacity 2s;
+  position:absolute;
+  bottom:10px;
+}
+
+#image{
+  margin-bottom:20px;
+  width:100%;
+  height: 200px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+#headline{
+  margin-bottom:20px;
+}
+
+#source{
+  float:left;
+  margin-top:20px;
+  color:#999;
+}
+
+#date{
+  float:right;
+  margin-top:20px;
+  color:#999;
+}
+
+.fade{
+  animation: fade 0.5s;
+  -webkit-animation: fade 0.5s;
+}
+
+@keyframes progress {
+  from {width:0%;}
+  to {width:100%;}
+}
+@-webkit-keyframes progress {
+  from {width:0%;}
+  to {width:100%;}
+}
+
+@keyframes fade {
+  from {transform:scale(1);opacity: 1}
+  to {transform:scale(0.5);opacity: 0}
+}
+@-webkit-keyframes fade {
+  from {transform:scale(1);opacity: 1}
+  to {transform:scale(0.5);opacity: 0}
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>MirrorOS</title>
+    <link rel="stylesheet" href="styles/style.css" />    
+    <link rel="stylesheet" href="styles/transitions.css" />    
+    <script type="text/javascript" src="view.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+    <script type="text/javascript" src="prototypes.js"></script>
+    <script type="text/javascript" src="utils.js"></script>
+  </head>
+  <body>
+    <div id="infoBar">
+		<p id="info1"></p>
+		<p id="clock"></p>
+		<p id="resultText"></p>
+		<p id="appNameText"></p>
+	</div>
+    <div id="content">
+	</div>
+    <div id="controlContainer">
+		<img id="speechButton" class="actionButton hidden" onclick="startVoiceRecognition()" src="images/mic.png" />
+	</div>
+	<div id="alertHolder">
+		<div id="alert">
+			<h1 id="alertTitle"></h1>
+			<p id="alertMessage"></p>
+		</div>
+	</div>
+	<p id="toast"></p>
+	<div id="splash"><h1 id="splashTitle">Starting...</h1></div>
+	<div id="leftSensorIndicator" class="sensorIndicator"><div class="progress"></div></div>
+	<div id="rightSensorIndicator" class="sensorIndicator"><div class="progress"></div></div>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "name"    : "Headlines",
+  "package"	: "mirroros.news",
+  "version" : "1.0",
+  "keywords": ["news","headlines"],
+  "color" : "#666666"
+}

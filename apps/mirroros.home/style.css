@@ -1,0 +1,73 @@
+*{
+	margin:0;
+	padding:0;
+}
+
+body{
+	font-family:Roboto,sans serif;
+	background:#000;
+	color:#fff;
+}
+#container{
+	position:relative;
+	top:120px;	
+	width:100%;
+}
+
+#clock{
+	font-family:Roboto Thin,sans serif;
+	font-size:6em;
+}
+
+#feed{
+	width:40%;
+	position:relative;
+	top:120px;
+	margin: 0 auto;
+}
+
+.note{
+	min-height:60px;
+	padding:20px;
+	box-sizing:border-box;
+	border:1px solid white;
+	color:white;
+	font-family:Roboto,sans serif;
+	font-weight:bold;
+	margin-bottom:10px;
+	animation: enter 1s;
+	animation-fill-mode: forwards;
+}
+
+.reminder{
+	border:2x solid yellow;
+	animation: reminder 1s infinite;
+	animation-direction:alternate;
+	box-sizing:border-box;
+}
+
+#clock-panel{
+	position:fixed;
+	bottom:0px;
+}
+#weather-panel{
+	position:fixed;
+	bottom:0px;
+	right:0px;
+	text-align:center;
+	padding-right:8px;
+}
+
+#date{
+	padding-left:8px;
+}
+
+@keyframes enter{
+	from { transform:translateY(150px); opacity:0}
+	to { transform:translateY(0px); opacity:1}
+}
+
+@keyframes reminder{
+	from { background:white;color:black}
+	to { background:black;color:white}
+}

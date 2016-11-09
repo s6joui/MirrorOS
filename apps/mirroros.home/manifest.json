@@ -1,0 +1,11 @@
+{
+	"name"    : "Mirror Home",
+	"package"	: "mirroros.home",
+	"version" : "1.0",
+	"keywords": ["remind",
+			   "note",
+			   "alarm",
+			   "clear",
+			   "home"],
+ 	"color" : "#119933"
+}

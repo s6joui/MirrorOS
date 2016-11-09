@@ -1,0 +1,27 @@
+{
+	"home_app":"mirroros.home",
+	"assistant_app":"mirroros.assistant",
+	"motion_sensors":false,
+	"api_keys":{	
+		"Google Speech":{
+			"value":"",
+			"source":"https://www.chromium.org/developers/how-tos/api-keys"
+		},	
+		"Forecast.io":{
+			"value":"",
+			"source":"http://forecast.io"
+		},	
+		"Bing Image Search":{
+			"value":"",
+			"source":"https://www.microsoft.com/cognitive-services/en-us/bing-image-search-api"
+		},
+		"WolframAlpha":{
+			"value":"",
+			"source":"http://products.wolframalpha.com/api/"
+		},
+		"News API":{
+			"value":"",
+			"source":"http://www.newsapi.org"
+		}
+	}
+}

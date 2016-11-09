@@ -1,0 +1,148 @@
+*{
+	margin:0;
+	padding:0;
+}
+
+html{
+	height:100%
+}
+
+body{
+	height:100%;
+	overflow:hidden;
+	background:#000000;
+	font-family: Roboto,sans-serif;
+}
+
+#grid{
+	height:100%;
+	position:relative;
+	transition: top 3s;
+	cursor:pointer;
+	top:100%;
+}
+
+#viewer{
+	display:none;
+	position:fixed;
+	bottom:0px;
+	width:100%;
+	height:100%;
+	background-color:rgba(0,0,0,0.5);
+}
+
+#picture{
+	width:100%;
+	height: 50%;	
+	background-size:contain;
+	background-repeat:no-repeat;
+	background-position: bottom;
+	position:fixed;
+	bottom:0px;
+}
+
+.imageResult{
+	width: calc(100% / 8);	
+	width: -webkit-calc(100% / 8);	
+	height:150px;
+	float:left;
+	background-size:cover;
+	background-repeat:no-repeat;
+}
+
+#chat-container{
+	position:absolute;
+	bottom:0px;
+	width:100%;
+	margin-bottom:10px;
+}
+
+.chat-bubble{
+	max-width:80%;
+	margin:10px;
+	background:#fff;
+	color:#000;
+	border-radius:8px;
+	padding:12px 16px;
+	font-size:1.5em;
+	clear:both;
+	animation:goUp 0.5s;
+	animation-fill-mode:forwards;
+}
+
+.chat-bubble img{
+	max-width:100%;
+}
+
+.chat-query{
+	float:right;
+	text-align:right;
+	text-transform:capitalize;
+}
+
+.chat-answer,.chat-loading-answer{
+	float:left;
+}
+
+.chat-loading-answer{
+	animation:scaleUp 0.4s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+}
+
+@keyframes scrollAni{
+	0%{top:70%;}
+	100%{top:30%;}
+}
+
+@keyframes goUp{
+	0%{transform:translateY(100%);opacity:0}
+	100%{transform:translateY(0%);opacity:1}
+}
+
+@keyframes scaleUp{
+	0%{transform:scale(0.8);}
+	100%{transform:scale(1);}
+}
+
+@media screen and (max-width: 1190px) {
+	.imageResult {
+		width: calc(100% / 7);
+	}
+}
+
+@media screen and (max-width: 945px) {
+	.imageResult {
+		width: calc(100% / 6);
+	}
+}
+
+@media screen and (max-width: 800px) {
+	.imageResult {
+		width: calc(100% / 5);
+	}
+}
+
+@media screen and (max-width: 660px) {
+	.imageResult {
+		width: calc(100% / 4);
+	}
+}
+
+@media screen and (max-width: 520px) {
+	.imageResult {
+		width: calc(100% / 3);
+	}
+}
+
+@media screen and (max-width: 420px) {
+	.imageResult {
+		width: calc(100% / 2);
+	}
+}
+
+@media screen and (max-width: 320px) {
+	.imageResult {
+		width: 100%;
+	}
+}
