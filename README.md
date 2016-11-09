@@ -28,3 +28,5 @@ You can control MirrorOS from any device that has a browser by going to the IP a
 From the remote control app you can install other apps, launch apps and use your smartphone's microphone to send commands to the mirror.
 ##Building apps for MirrorOS
 Coming soon... In the meantime check the source of the included apps. They are all in the "apps" folder.
+##License
+MIT License
