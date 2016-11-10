@@ -17,7 +17,7 @@ var socketIO;
 
 var view;
 
-var SpeechRecognizer = require('./speech-recognizer.js');
+var SpeechRecognizer = require('./core/speech-recognizer/speech-recognizer.js');
 
 window.onload = function(){
 	console.log(__dirname);
@@ -153,7 +153,7 @@ function listenToAllClients(actionTitle,callback){
 function startGestureRecognition(callback){
 	//Listen for gestures on ultrasound sensor
 	var spawn = require('child_process').spawn;
-	gestureListener = spawn("python",["-u",SYSTEM_DIR+"/core/gestures.py"]);
+	gestureListener = spawn("python",["-u",SYSTEM_DIR+"/core/gesture-recognizer/gestures.py"]);
 
 	gestureListener.stdout.on('data', function (data) {
 		var gesture = (""+data).trim();
@@ -171,7 +171,7 @@ function startGestureRecognition(callback){
 function readRawSensorData(file,callback){
 	//Listen for gestures on ultrasound sensor
 	var spawn = require('child_process').spawn;
-	var process = spawn("python",["-u",SYSTEM_DIR+"/core/"+file+".py"]);
+	var process = spawn("python",["-u",SYSTEM_DIR+"/core/gesture-recognizer/"+file+".py"]);
 
 	process.stdout.on('data', function (data) {
 		var distance = (""+data).trim();
@@ -365,7 +365,7 @@ function launchApp(app,query){
 }
 
 function installApp(url){
-	var AppInstaller = require('./app-installer.js');
+	var AppInstaller = require('./core/app-installer.js');
 	view.showToast("Installing app from "+url);
 	var installer = new AppInstaller();
 	installer.install(url,function(){

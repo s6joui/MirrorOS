@@ -13,7 +13,7 @@ var SpeechRecognizer = function(key) {
 		//Listen for claps on mic
 		var that = this;
 		var spawn = require('child_process').spawn;
-		that.micListener = spawn("python",["-u",SYSTEM_DIR+"/core/mic.py",that.apiKey]);
+		that.micListener = spawn("python",["-u",SYSTEM_DIR+"/core/speech-recognizer/mic.py",that.apiKey]);
 		that.micListener.stdout.on('data', function (data) {
 			var stringData = (""+data).trim();
 			if(that.enabled && stringData.length>0){

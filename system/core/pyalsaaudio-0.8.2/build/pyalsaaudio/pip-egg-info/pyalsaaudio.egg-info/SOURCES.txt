@@ -1,5 +1,0 @@
-alsaaudio.c
-pip-egg-info/pyalsaaudio.egg-info/PKG-INFO
-pip-egg-info/pyalsaaudio.egg-info/SOURCES.txt
-pip-egg-info/pyalsaaudio.egg-info/dependency_links.txt
-pip-egg-info/pyalsaaudio.egg-info/top_level.txt
