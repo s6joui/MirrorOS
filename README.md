@@ -3,6 +3,10 @@ MirrorOS is a new platform for smart mirrors that focuses mainly in interactivit
 
 **NOTE**: This project is in a very early phase. You can expect bugs and crashes. It has only beeen tested on a Raspberry Pi 3.
 ##Installation
+Install pyaudio
+
+```sudo apt-get install python-pyaudio python3-pyaudio```
+
 Download and run 
 ```npm install```
 and then
