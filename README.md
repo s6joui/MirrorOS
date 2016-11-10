@@ -7,12 +7,12 @@ Install pyaudio
 
 ```sudo apt-get install python-pyaudio python3-pyaudio```
 
-Download and run 
+Download the source and run 
 ```npm install```
 and then
 ```npm start```
 ##Configuration
-Most apps will need access to API keys from different services to fully work. Edit the config.js file and add your own API keys.
+Most apps will need access to API keys from different services to fully work. Edit the config.json file and add your own API keys.
 In this file you can also set the default home app and the default assistant app as well as enabling gesture support but this requires you to have the appropiate sensors to work.
 ##Hardware requirements
 - Raspberry Pi 2 or 3
@@ -22,7 +22,7 @@ In this file you can also set the default home app and the default assistant app
 ####Home app
 Shows weather and date information. Can set reminders.
 #####Super app (Assistant)
-This is a Sri-like app. You can ask it anything.
+This is a Sri-like app. Ask anything!
 #####YouTube app
 Watch YouTube videos.
 #####News apps
