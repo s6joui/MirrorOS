@@ -2,11 +2,8 @@ var SYSTEM_DIR = __dirname;
 var MAIN_DIR = __dirname.replace("/system","");
 var APP_DIR = MAIN_DIR+"/apps/";
 var appData = [];
-var speechRecognizer,gestureListener;
+var speechRecognizer,gestureRecognizer;
 var sys_config;
-
-var FULL_MODE = 55;
-var SMALL_MODE = 56;
 
 var currentApp;
 var home_app_index=0,assistant_app_index = -1;
@@ -18,10 +15,13 @@ var socketIO;
 var view;
 
 var SpeechRecognizer = require('./core/speech-recognizer/speech-recognizer.js');
+var GestureRecognizer = require('./core/gesture-recognizer/gesture-recognizer.js');
+var SensorReader = require('./core/gesture-recognizer/sensor-reader.js');
 
 window.onload = function(){
 	console.log(__dirname);
 	console.log(MAIN_DIR);
+	
 	view = new View();
 
 	// Load config and app info
@@ -47,48 +47,8 @@ window.onload = function(){
 	setInterval(function(){
 		view.setStatus(getIPAddress());
 	},30000);
-	
 }
 
-var titleTimeout;
-function setupSpeechRecognition(){
-	var apiKey = getAPIKey("Google Speech");
-	speechRecognizer = new SpeechRecognizer(apiKey).start(function(){
-		view.setUIMode(FULL_MODE);
-		view.showSpeechButton()
-		view.setSpeechButtonActive(true)
-		view.setTitle("Listening...");
-		if(titleTimeout){
-			clearTimeout(titleTimeout);
-		}
-	})
-	.result(function(text){
-		console.log(text);
-		view.setUIMode(SMALL_MODE);
-		view.setSpeechButtonActive(false)
-		view.setTitle(text);
-		launchAppWithQuery(text);
-	})
-	.error(function(message){
-		view.showToast(message,8000);
-		setTimeout(setupSpeechRecognition,8000);
-		speechRecognizer.kill();
-	})
-	.fail(function(){
-		view.setTitle("Sorry, didn't catch that");
-		titleTimeout = setTimeout(function(){
-			view.setTitle("Clap to begin!");
-			view.setUIMode(SMALL_MODE);
-		},3000);
-	});
-}
-
-function setMicrophoneEnabled(enabled){
-	speechRecognizer.enabled = enabled;
-	if(!enabled){
-		view.showToast("Microphone disabled");
-	}
-}
 
 function setupRemoteAppServer(){
 	//HTML Server for remote control app
@@ -150,79 +110,85 @@ function listenToAllClients(actionTitle,callback){
 	}
 }
 
-function startGestureRecognition(callback){
-	//Listen for gestures on ultrasound sensor
-	var spawn = require('child_process').spawn;
-	gestureListener = spawn("python",["-u",SYSTEM_DIR+"/core/gesture-recognizer/gestures.py"]);
-
-	gestureListener.stdout.on('data', function (data) {
-		var gesture = (""+data).trim();
-		if (gesture.length > 0 && !isNaN(parseInt(gesture))){	
-			console.log(parseInt(gesture));
-			callback(gesture,gestureListener);
+var titleTimeout;
+function setupSpeechRecognition(){
+	var apiKey = getAPIKey("Google Speech");
+	speechRecognizer = new SpeechRecognizer(apiKey).start(function(){
+		view.setUIMode(FULL_MODE);
+		view.showSpeechButton()
+		view.setSpeechButtonActive(true)
+		view.setTitle("Listening...");
+		if(titleTimeout){
+			clearTimeout(titleTimeout);
 		}
-	});
-
-	gestureListener.stderr.on('data', function (data) {
-		console.log('stderr: ' + data);
+	})
+	.result(function(text){
+		console.log(text);
+		view.setUIMode(SMALL_MODE);
+		view.setSpeechButtonActive(false)
+		view.setTitle(text);
+		launchAppWithQuery(text);
+	})
+	.error(function(message){
+		view.showToast(message,8000);
+		setTimeout(setupSpeechRecognition,8000);
+		speechRecognizer.kill();
+	})
+	.fail(function(){
+		view.setTitle("Sorry, didn't catch that");
+		titleTimeout = setTimeout(function(){
+			view.setTitle("Clap to begin!");
+			view.setUIMode(SMALL_MODE);
+		},3000);
 	});
 }
 
-function readRawSensorData(file,callback){
-	//Listen for gestures on ultrasound sensor
-	var spawn = require('child_process').spawn;
-	var process = spawn("python",["-u",SYSTEM_DIR+"/core/gesture-recognizer/"+file+".py"]);
-
-	process.stdout.on('data', function (data) {
-		var distance = (""+data).trim();
-		if (distance.length>0 && !isNaN(parseFloat(distance))){	
-			callback(distance,process);
-		}
-	});
-
-	process.stderr.on('data', function (data) {
-		console.log('stderr: ' + data);
-	});
-}
-
-
-function setSensorDataEnabled(enabled,webview){
-	if(sys_config.motion_sensors == false)
-		return;
-	readSensorData = enabled;
-	if(enabled){
-		readRawSensorData("sensors_raw_left",function(data,process){
-			if(readSensorData){
-				webview.send('sensorData',data,900);
-			}else{
-				process.kill();
-			}
-		});
-		readRawSensorData("sensors_raw_right",function(data,process){
-			if(readSensorData){
-				webview.send('sensorData',data,901);
-			}else{
-				process.kill();
-			}
-		});
+function setMicrophoneEnabled(enabled){
+	speechRecognizer.enabled = enabled;
+	if(!enabled){
+		view.showToast("Microphone disabled");
 	}
 }
 
 function setGestureRecognitionEnabled(enabled,webview){
 	if(sys_config.motion_sensors == false)
 		return;
+	
 	gesturesEnabled = enabled
 	if(enabled){
-		startGestureRecognition(function(gesture,listener){
+		gestureRecognizer = new GestureRecognizer().result(function(gesture){
 			if(gesturesEnabled){
 				view.showSensorIndicators(gesture);
 				webview.send('gesture',gesture);
 			}else{
-				listener.kill();
+				this.kill();
 			}
 		});
-	}else{
-		gestureListener.kill();
+	}else if(gestureRecognizer){
+		gestureRecognizer.kill();
+	}
+}
+
+function setSensorDataEnabled(enabled,webview){
+	if(sys_config.motion_sensors == false)
+		return;
+		
+	readSensorData = enabled;
+	if(enabled){
+		var leftSensorReader = new SensorReader("sensors_raw_left").result(function(data){
+			if(readSensorData){
+				webview.send('sensorData',data,900);
+			}else{
+				this.kill();
+			}
+		});
+		var rightSensorReader = new SensorReader("sensors_raw_left").result(function(data){
+			if(readSensorData){
+				webview.send('sensorData',data,901);
+			}else{
+				this.kill();
+			}
+		});
 	}
 }
 
@@ -249,7 +215,8 @@ function launchApp(app,query){
 		if(connectedDevices > 0){
 			webview.send('remoteConnect');
 		}
-	}else{
+	}else{		
+		//If app is not open, open it with query
 		var title = query ? query : "";
 		view.setSubtitle("");
 		view.setTitle(title);
@@ -259,7 +226,6 @@ function launchApp(app,query){
 			view.showSplashWithTitle(label);
 		}
 		
-		//If app is not open, open it with query
 		currentApp = app;
 		console.log("Launching app "+app.name);
 		
@@ -267,12 +233,8 @@ function launchApp(app,query){
 		
 		readSensorData = false;
 			
-		//setGestureRecognitionEnabled(false);
-		if(gestureListener){
-			gesturesEnabled = false;
-			gestureListener.kill();
-		}
-		
+		setGestureRecognitionEnabled(false);
+
 		var container = document.querySelector('#content');
 		container.empty();
 		
@@ -318,50 +280,53 @@ function launchApp(app,query){
 			console.log(app.name+':', e.message);
 		});
 		
-		webview.addEventListener('ipc-message', function(event) {
-			if(event.channel == 'setTitle'){
-				var title = event.args[0];
-				view.setTitle(title);
-			}else if(event.channel == 'setMicrophoneEnabled'){
-				var enabled = event.args[0];
-				setMicrophoneEnabled(enabled);
-			}else if(event.channel == 'setGestureRecognitionEnabled'){
-				var enabled = event.args[0];
-				setGestureRecognitionEnabled(enabled,webview);
-			}else if(event.channel == 'setSensorDataEnabled'){
-				var enabled = event.args[0];
-				setSensorDataEnabled(enabled,webview);
-			}else if(event.channel == 'showToast'){
-				var message = event.args[0];
-				var length = event.args[1];
-				view.showToast(message,length);
-			}else if(event.channel == 'showAlert'){
-				var title = event.args[0];
-				var message = event.args[1];
-				var alertId = event.args[2];
-				showAlert(title,message,webview,alertId);
-			}else if(event.channel == 'setMediaHeader'){
-				var title = event.args[0];
-				var uri = event.args[1];
-				var type = event.args[2];
-				var mediaHeader = {title:title,uri:uri,type:type,appIndex:getCurrentAppIndex()};
-				if(socketIO){
-					socketIO.emit('media-header-setup',mediaHeader);
-				}
-			}else if(event.channel == 'addRemoteAction'){
-				var actionTitle = event.args[0];
-				var actionId = event.args[1];
-				var type = event.args[2];
-				if(socketIO){
-					socketIO.emit('add-action',{title:actionTitle,id:actionId,type:type,appIndex:getCurrentAppIndex()});
-					listenToAllClients('action-trigger-'+actionId,function(data){
-						webview.send('remoteAction',data.actionId,data.param);
-					});
-				}
-			}
-		});
-		
+		setupAPI(webview);
 	}
+}
+
+function setupAPI(webview){
+	webview.addEventListener('ipc-message', function(event) {
+		if(event.channel == 'setTitle'){
+			var title = event.args[0];
+			view.setTitle(title);
+		}else if(event.channel == 'setMicrophoneEnabled'){
+			var enabled = event.args[0];
+			setMicrophoneEnabled(enabled);
+		}else if(event.channel == 'setGestureRecognitionEnabled'){
+			var enabled = event.args[0];
+			setGestureRecognitionEnabled(enabled,webview);
+		}else if(event.channel == 'setSensorDataEnabled'){
+			var enabled = event.args[0];
+			setSensorDataEnabled(enabled,webview);
+		}else if(event.channel == 'showToast'){
+			var message = event.args[0];
+			var length = event.args[1];
+			view.showToast(message,length);
+		}else if(event.channel == 'showAlert'){
+			var title = event.args[0];
+			var message = event.args[1];
+			var alertId = event.args[2];
+			showAlert(title,message,webview,alertId);
+		}else if(event.channel == 'setMediaHeader'){
+			var title = event.args[0];
+			var uri = event.args[1];
+			var type = event.args[2];
+			var mediaHeader = {title:title,uri:uri,type:type,appIndex:getCurrentAppIndex()};
+			if(socketIO){
+				socketIO.emit('media-header-setup',mediaHeader);
+			}
+		}else if(event.channel == 'addRemoteAction'){
+			var actionTitle = event.args[0];
+			var actionId = event.args[1];
+			var type = event.args[2];
+			if(socketIO){
+				socketIO.emit('add-action',{title:actionTitle,id:actionId,type:type,appIndex:getCurrentAppIndex()});
+				listenToAllClients('action-trigger-'+actionId,function(data){
+					webview.send('remoteAction',data.actionId,data.param);
+				});
+			}
+		}
+	});
 }
 
 function installApp(url){
@@ -479,37 +444,11 @@ function getAPIKey(keyName){
 	}
 }
 
-/*function showAlert(title,message,webview,alertId){
-	var alert = document.querySelector("#alert");
-	var alertTitle = document.querySelector("#alertTitle");
-	var alertMessage = document.querySelector("#alertMessage");
-	alertTitle.innerHTML = title;
-	alertMessage.innerHTML = message;
-	alert.fadeIn();
-	
-	startGestureRecognition(function(gesture,listener){
-		if(gesture == GESTURE_LEFT){
-			alert.style.backgroundColor="red";
-		}else if(gesture == GESTURE_RIGHT){
-			alert.style.backgroundColor="green";
-		}else if(gesture == GESTURE_HOLD_LEFT){
-			alert.fadeOut();
-			if(!gesturesEnabled)
-				listener.kill();
-			webview.send('alertNegative',alertId);
-		}else if(gesture == GESTURE_HOLD_RIGHT){
-			alert.fadeOut();
-			if(!gesturesEnabled)
-				listener.kill();
-			webview.send('alertPositive',alertId);
-		}
-	});
-}*/
-
 window.onbeforeunload = function () {
-	speechRecognizer.kill();
-	if(gestureListener){
-		console.log("Killing GPIO proccess");
-		gestureListener.kill();
+	if(gestureRecognizer){
+		gestureRecognizer.kill();
+	}
+	if(speechRecognizer){
+		speechRecognizer.kill();
 	}
 };

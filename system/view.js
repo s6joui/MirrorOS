@@ -1,5 +1,8 @@
+var FULL_MODE = 55;
+var SMALL_MODE = 56;
+
 var View = function() {
-	
+
 	var titleEl = document.querySelector("#resultText");
 	var subtitleEl = document.querySelector("#appNameText");
 	var clockEl = document.querySelector("#clock");
@@ -139,4 +142,33 @@ var View = function() {
 	this.getStatus = function(){
 		return statusEl.innerHTML;
 	}
+	
+	//OLD
+	/*function showAlert(title,message,webview,alertId){
+		var alert = document.querySelector("#alert");
+		var alertTitle = document.querySelector("#alertTitle");
+		var alertMessage = document.querySelector("#alertMessage");
+		alertTitle.innerHTML = title;
+		alertMessage.innerHTML = message;
+		alert.fadeIn();
+		
+		startGestureRecognition(function(gesture,listener){
+			if(gesture == GESTURE_LEFT){
+				alert.style.backgroundColor="red";
+			}else if(gesture == GESTURE_RIGHT){
+				alert.style.backgroundColor="green";
+			}else if(gesture == GESTURE_HOLD_LEFT){
+				alert.fadeOut();
+				if(!gesturesEnabled)
+					listener.kill();
+				webview.send('alertNegative',alertId);
+			}else if(gesture == GESTURE_HOLD_RIGHT){
+				alert.fadeOut();
+				if(!gesturesEnabled)
+					listener.kill();
+				webview.send('alertPositive',alertId);
+			}
+		});
+	}*/
+
 }
