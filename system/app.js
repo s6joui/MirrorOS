@@ -1,9 +1,10 @@
 var SYSTEM_DIR = __dirname;
 var MAIN_DIR = __dirname.replace("/system","");
 var APP_DIR = MAIN_DIR+"/apps/";
+
 var appData = [];
-var speechRecognizer,gestureRecognizer;
 var sys_config;
+var speechRecognizer,gestureRecognizer;
 
 var currentApp;
 var home_app_index=0,assistant_app_index = -1;
@@ -49,6 +50,142 @@ window.onload = function(){
 	},30000);
 }
 
+function launchAppWithQuery(q){
+	var query = q.toLowerCase();
+	var appToLaunch = findAppToLaunchWithQuery(query);
+	if(appToLaunch!=-1){
+		launchApp(appToLaunch,query);
+	}
+}
+
+function launchApp(app,query){
+	var connectedDevices = socketIO.engine.clientsCount;
+	console.log("Connected devices: "+connectedDevices);
+	if(app == currentApp){
+		//If app is already open send query
+		var webview = document.querySelector("#mainAppView");
+		if(query){
+			webview.send('query',query);
+			console.log("Sent query '"+query+"' to app "+app.name);
+		}
+		socketIO.emit('current-app',getCurrentAppIndex());
+		socketIO.emit('app-launched',getCurrentAppIndex());
+		if(connectedDevices > 0){
+			webview.send('remoteConnect');
+		}
+	}else{		
+		//If app is not open, open it with query
+		var title = query ? query : "";
+		view.setSubtitle("");
+		view.setTitle(title);
+		view.setUIMode(FULL_MODE)
+		var label = app == appData[home_app_index] ? "" : app.name;
+		if(label!=""){
+			view.showSplashWithTitle(label);
+		}
+		
+		currentApp = app;
+		console.log("Launching app "+app.name);
+		
+		setMicrophoneEnabled(true);
+		
+		readSensorData = false;
+			
+		setGestureRecognitionEnabled(false);
+
+		var container = document.querySelector('#content');
+		container.empty();
+		
+		var app_url = APP_DIR+app.package+"/index.html";
+
+		var webview = document.createElement('webview');
+		webview.addClass('appView');
+		webview.id = "mainAppView";
+		webview.preload = "ipc-api.js";
+		webview.setAttribute('nodeintegration', true);
+		webview.src = app_url;
+		container.appendChild(webview)
+				
+		webview.addEventListener("did-startloading",function(){
+			console.log("started loading");
+		});
+		
+		socketIO.emit('current-app',getCurrentAppIndex());
+		
+		var loaded = false;
+		webview.addEventListener("did-stop-loading",function(){
+			if(!loaded){
+				console.log("App loaded");
+				
+				view.setSubtitle(app.name);
+				view.hideSplash();
+				
+				if(query){
+					webview.send('query',query);
+				}
+				
+				socketIO.emit('app-launched',getCurrentAppIndex());
+				if(connectedDevices > 0){
+					webview.send('remoteConnect');
+				}
+				
+				//webview.openDevTools();
+				loaded = true;
+			}
+		});
+		
+		webview.addEventListener('console-message', function(e) {
+			console.log(app.name+':', e.message);
+		});
+		
+		setupAPI(webview);
+	}
+}
+
+function setupAPI(webview){
+	webview.addEventListener('ipc-message', function(event) {
+		if(event.channel == 'setTitle'){
+			var title = event.args[0];
+			view.setTitle(title);
+		}else if(event.channel == 'setMicrophoneEnabled'){
+			var enabled = event.args[0];
+			setMicrophoneEnabled(enabled);
+		}else if(event.channel == 'setGestureRecognitionEnabled'){
+			var enabled = event.args[0];
+			setGestureRecognitionEnabled(enabled,webview);
+		}else if(event.channel == 'setSensorDataEnabled'){
+			var enabled = event.args[0];
+			setSensorDataEnabled(enabled,webview);
+		}else if(event.channel == 'showToast'){
+			var message = event.args[0];
+			var length = event.args[1];
+			view.showToast(message,length);
+		}else if(event.channel == 'showAlert'){
+			var title = event.args[0];
+			var message = event.args[1];
+			var alertId = event.args[2];
+			showAlert(title,message,webview,alertId);
+		}else if(event.channel == 'setMediaHeader'){
+			var title = event.args[0];
+			var uri = event.args[1];
+			var type = event.args[2];
+			var mediaHeader = {title:title,uri:uri,type:type,appIndex:getCurrentAppIndex()};
+			if(socketIO){
+				socketIO.emit('media-header-setup',mediaHeader);
+			}
+		}else if(event.channel == 'addRemoteAction'){
+			var actionTitle = event.args[0];
+			var actionId = event.args[1];
+			var type = event.args[2];
+			if(socketIO){
+				socketIO.emit('add-action',{title:actionTitle,id:actionId,type:type,appIndex:getCurrentAppIndex()});
+				listenToAllClients('action-trigger-'+actionId,function(data){
+					webview.send('remoteAction',data.actionId,data.param);
+				});
+			}
+		}
+	});
+}
 
 function setupRemoteAppServer(){
 	//HTML Server for remote control app
@@ -190,143 +327,6 @@ function setSensorDataEnabled(enabled,webview){
 			}
 		});
 	}
-}
-
-function launchAppWithQuery(q){
-	var query = q.toLowerCase();
-	var appToLaunch = findAppToLaunchWithQuery(query);
-	if(appToLaunch!=-1){
-		launchApp(appToLaunch,query);
-	}
-}
-
-function launchApp(app,query){
-	var connectedDevices = socketIO.engine.clientsCount;
-	console.log("Connected devices: "+connectedDevices);
-	if(app == currentApp){
-		//If app is already open send query
-		var webview = document.querySelector("#mainAppView");
-		if(query){
-			webview.send('query',query);
-			console.log("Sent query '"+query+"' to app "+app.name);
-		}
-		socketIO.emit('current-app',getCurrentAppIndex());
-		socketIO.emit('app-launched',getCurrentAppIndex());
-		if(connectedDevices > 0){
-			webview.send('remoteConnect');
-		}
-	}else{		
-		//If app is not open, open it with query
-		var title = query ? query : "";
-		view.setSubtitle("");
-		view.setTitle(title);
-		view.setUIMode(FULL_MODE)
-		var label = app == appData[home_app_index] ? "" : app.name;
-		if(label!=""){
-			view.showSplashWithTitle(label);
-		}
-		
-		currentApp = app;
-		console.log("Launching app "+app.name);
-		
-		setMicrophoneEnabled(true);
-		
-		readSensorData = false;
-			
-		setGestureRecognitionEnabled(false);
-
-		var container = document.querySelector('#content');
-		container.empty();
-		
-		var app_url = APP_DIR+app.package+"/index.html";
-
-		var webview = document.createElement('webview');
-		webview.addClass('appView');
-		webview.id = "mainAppView";
-		webview.preload = "mirror-ipc.js";
-		webview.setAttribute('nodeintegration', true);
-		webview.src = app_url;
-		container.appendChild(webview)
-				
-		webview.addEventListener("did-startloading",function(){
-			console.log("started loading");
-		});
-		
-		socketIO.emit('current-app',getCurrentAppIndex());
-		
-		var loaded = false;
-		webview.addEventListener("did-stop-loading",function(){
-			if(!loaded){
-				console.log("App loaded");
-				
-				view.setSubtitle(app.name);
-				view.hideSplash();
-				
-				if(query){
-					webview.send('query',query);
-				}
-				
-				socketIO.emit('app-launched',getCurrentAppIndex());
-				if(connectedDevices > 0){
-					webview.send('remoteConnect');
-				}
-				
-				//webview.openDevTools();
-				loaded = true;
-			}
-		});
-		
-		webview.addEventListener('console-message', function(e) {
-			console.log(app.name+':', e.message);
-		});
-		
-		setupAPI(webview);
-	}
-}
-
-function setupAPI(webview){
-	webview.addEventListener('ipc-message', function(event) {
-		if(event.channel == 'setTitle'){
-			var title = event.args[0];
-			view.setTitle(title);
-		}else if(event.channel == 'setMicrophoneEnabled'){
-			var enabled = event.args[0];
-			setMicrophoneEnabled(enabled);
-		}else if(event.channel == 'setGestureRecognitionEnabled'){
-			var enabled = event.args[0];
-			setGestureRecognitionEnabled(enabled,webview);
-		}else if(event.channel == 'setSensorDataEnabled'){
-			var enabled = event.args[0];
-			setSensorDataEnabled(enabled,webview);
-		}else if(event.channel == 'showToast'){
-			var message = event.args[0];
-			var length = event.args[1];
-			view.showToast(message,length);
-		}else if(event.channel == 'showAlert'){
-			var title = event.args[0];
-			var message = event.args[1];
-			var alertId = event.args[2];
-			showAlert(title,message,webview,alertId);
-		}else if(event.channel == 'setMediaHeader'){
-			var title = event.args[0];
-			var uri = event.args[1];
-			var type = event.args[2];
-			var mediaHeader = {title:title,uri:uri,type:type,appIndex:getCurrentAppIndex()};
-			if(socketIO){
-				socketIO.emit('media-header-setup',mediaHeader);
-			}
-		}else if(event.channel == 'addRemoteAction'){
-			var actionTitle = event.args[0];
-			var actionId = event.args[1];
-			var type = event.args[2];
-			if(socketIO){
-				socketIO.emit('add-action',{title:actionTitle,id:actionId,type:type,appIndex:getCurrentAppIndex()});
-				listenToAllClients('action-trigger-'+actionId,function(data){
-					webview.send('remoteAction',data.actionId,data.param);
-				});
-			}
-		}
-	});
 }
 
 function installApp(url){
