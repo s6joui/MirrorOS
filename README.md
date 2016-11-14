@@ -13,7 +13,7 @@ Install pyaudio
 ```sudo apt-get install python-pyaudio python3-pyaudio```
 
 Clone repo
-`
+
 ```git clone https://github.com/s6joui/MirrorOS```
 
 Run 
