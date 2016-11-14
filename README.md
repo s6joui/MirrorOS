@@ -1,5 +1,9 @@
 # MirrorOS
-![MirrorOS logo](https://raw.githubusercontent.com/s6joui/MirrorOS/master/logo.png "MirrorOS logo")
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/s6joui/MirrorOS/master/logo.png" alt="MirrorOS"/>
+</p>
+
 MirrorOS is a new platform for smart mirrors that focuses mainly in interactivity featuring voice commands and a smarthpone remote app. It runs web apps which are easy to build and has a set of APIs that developers can use to easily integrate voice commands and smartphone remote control.
 
 **NOTE**: This project is in a very early phase. You can expect bugs and crashes. It has only beeen tested on a Raspberry Pi 3.
@@ -8,7 +12,11 @@ Install pyaudio
 
 ```sudo apt-get install python-pyaudio python3-pyaudio```
 
-Download the source and run 
+Clone repo
+`
+```git clone https://github.com/s6joui/MirrorOS```
+
+Run 
 ```npm install```
 and then
 ```npm start```
