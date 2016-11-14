@@ -1,4 +1,5 @@
 # MirrorOS
+![MirrorOS logo](https://raw.githubusercontent.com/s6joui/MirrorOS/master/logo.png "MirrorOS logo")
 MirrorOS is a new platform for smart mirrors that focuses mainly in interactivity featuring voice commands and a smarthpone remote app. It runs web apps which are easy to build and has a set of APIs that developers can use to easily integrate voice commands and smartphone remote control.
 
 **NOTE**: This project is in a very early phase. You can expect bugs and crashes. It has only beeen tested on a Raspberry Pi 3.
@@ -16,7 +17,7 @@ Most apps will need access to API keys from different services to fully work. Ed
 In this file you can also set the default home app and the default assistant app as well as enabling gesture support but this requires you to have the appropiate sensors to work.
 ##Minimunm hardware requirements
 - Raspberry Pi 2 or 3
-- USB microphone
+- USB microphoneg
 
 ##Apps
 ####Home app
