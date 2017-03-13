@@ -1,6 +1,6 @@
 var Q = require('q');
 var fs = require("fs");
-var MAIN_DIR = __dirname.replace("/system","");
+var MAIN_DIR = __dirname.replace("/system/core","");
 
 var AppInstaller = function() {
 	this.install = function(url,success,error){
@@ -10,8 +10,10 @@ var AppInstaller = function() {
 		var filename = url.split('/').pop().split('#')[0].split('?')[0];
 		var filename_no_extension = filename.split(".")[0];
 		
-		var temp_dir = __dirname+'/temp/'+filename_no_extension;
-		var zip_dir = __dirname+'/temp/'+filename;
+		makeDir(MAIN_DIR+'/temp/');
+		
+		var temp_dir = MAIN_DIR+'/temp/'+filename_no_extension;
+		var zip_dir = MAIN_DIR+'/temp/'+filename;
 		
 		var file = fs.createWriteStream(zip_dir);
 		var manifest_file;
@@ -21,7 +23,7 @@ var AppInstaller = function() {
 		download(url,file).then(function(response){
 			//2 - Create temp folder
 			makeDir(temp_dir);
-			
+			console.log
 			//3 - Unzip in temp folder
 			return unzip(zip_dir,temp_dir);
 		}).then(function(){
@@ -34,9 +36,12 @@ var AppInstaller = function() {
 
 			//6 - Copy files to that dir
 			return moveDir(temp_dir,new_dir);
+		}).then(function(app_dir){
+			//7 - Download app dependencies (run npm install in app dir)
+			return installAppDependencies(app_dir);
 		}).then(function(){
 			success();
-			//7 - Delete temp files
+			//8 - Delete temp files
 			fs.unlinkSync(zip_dir);
 			deleteFolderRecursive(temp_dir);
 		}).fail(function (err) {
@@ -48,12 +53,6 @@ var AppInstaller = function() {
 	};
 };
 module.exports = AppInstaller;
-
-function makeDir(dir){
-	if (!fs.existsSync(dir)){
-		fs.mkdirSync(dir);
-	}	
-}
 
 function download(fileUrl,writeStream){
 	//TODO: Implement better url validator
@@ -93,7 +92,7 @@ function moveDir(from,to){
 			return console.error(err);
 			deferred.reject(new Error(err));
 		}
-		deferred.resolve();
+		deferred.resolve(to);
 	});
 	return deferred.promise;
 }
@@ -113,4 +112,4 @@ function deleteFolderRecursive(path) {
 		deferred.resolve();
 	}
 	return deferred.promise;
-};
+}

@@ -377,6 +377,10 @@ function loadApps(sys_config){
 		var appDirName = appList[i];
 		console.log(appDirName);
 		promises.push(readManifest(APP_DIR+appDirName+"/manifest.json"));
+		//Check if needs to install dependencies (run npm install)
+		if (fs.existsSync(APP_DIR+appDirName+"/package.json") && !fs.existsSync(APP_DIR+appDirName+"/node_modules")){
+			installAppDependencies(APP_DIR+appDirName);
+		}
 	}
 	Q.all(promises).then(function(appDataList){
 		var resultList = [];
