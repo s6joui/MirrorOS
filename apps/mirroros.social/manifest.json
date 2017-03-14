@@ -1,0 +1,7 @@
+{
+  "name"    : "#Social",
+  "package"	: "mirroros.social",
+  "version" : "1.0",
+  "keywords": ["twitter","instagram","hashtag"],
+  "color" : "#660066"
+}

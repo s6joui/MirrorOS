@@ -6,19 +6,19 @@ var AppInstaller = function() {
 	this.install = function(url,success,error){
 		if(url==null)
 			return;
-			
+
 		var filename = url.split('/').pop().split('#')[0].split('?')[0];
 		var filename_no_extension = filename.split(".")[0];
-		
+
 		makeDir(MAIN_DIR+'/temp/');
-		
+
 		var temp_dir = MAIN_DIR+'/temp/'+filename_no_extension;
 		var zip_dir = MAIN_DIR+'/temp/'+filename;
-		
+
 		var file = fs.createWriteStream(zip_dir);
 		var manifest_file;
 		console.log("downloading app from "+url);
-			
+
 		//1 - Download ZIP
 		download(url,file).then(function(response){
 			//2 - Create temp folder
@@ -29,9 +29,9 @@ var AppInstaller = function() {
 		}).then(function(){
 			//4 - Read manifest.json
 			manifest_file = JSON.parse(fs.readFileSync(temp_dir+'/manifest.json', 'utf8'));
-			
+
 			//5 - Create dir in "apps" dir with manifest package name
-			var new_dir = MAIN_DIR+'/apps/'+manifest_file.package;
+			var new_dir = MAIN_DIR+"\apps\"+manifest_file.package;
 			makeDir(new_dir);
 
 			//6 - Copy files to that dir
@@ -49,7 +49,7 @@ var AppInstaller = function() {
 			console.log(err);
 			error(err);
 		}).done();
-		
+
 	};
 };
 module.exports = AppInstaller;

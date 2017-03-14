@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <title>YouTube</title>
-    <link rel="stylesheet" href="style.css" />    
+    <link rel="stylesheet" href="style.css" />
     <script type="text/javascript" src="jquery-2.1.4.min.js"></script>
     <script type="text/javascript">
 		window.$ = window.jQuery = require('./jquery-2.1.4.min.js');
@@ -16,29 +16,29 @@
 	<img id="thumbnail" width="100%">
 	<div id="container">
 	</div>
-	<script type="text/javascript">	 
+	<script type="text/javascript">
 		var loader = $('#loader');
 		var yt_stream;
-		
+
 		MOS.setGestureRecognitionEnabled(true);
-		
+
 		MOS.onRemoteConnect = function(){
 			MOS.addRemoteAction('Search',0,REMOTE_ACTION_TYPE_INPUT);
 			loader.hide();
 		}
-		
+
 		MOS.onRemoteAction = function(actionId, searchQuery){
 			if(actionId==0){
 				MOS.setMicrophoneEnabled(false);
 				loadVideoWithQuery(searchQuery);
 			}
 		}
-		
+
 		MOS.onNewQuery = function(query){
 			MOS.setMicrophoneEnabled(false);
 			loadVideoWithQuery(query);
 		}
-		
+
 		function loadVideoWithQuery(query){
 			if(yt_stream)
 				yt_stream.destroy();
@@ -46,22 +46,17 @@
 			MOS.setTitle(query);
 			var container = $('#container');
 			container.empty();
-			var finalQuery = query;
-			if(query.indexOf('youtube')>=0){
-				finalQuery = query.replace("youtube","");
-			}else if(query.indexOf('video of ')>=0){
-				finalQuery = query.replace("video of ","");
-			}
+            var finalQuery = query.replace(/youtube|video of /g, "");
 			$.get("https://www.googleapis.com/youtube/v3/search",{part:"snippet",maxResults:1,safeSearch:"none",type:"video",key:"AIzaSyBVZHM3HBJd4Ol1xzghY21F3WxTHHrI9q8",q:finalQuery},function(result){
 				var yid = result.items[0].id.videoId;
 				var videoTitle = result.items[0].snippet.title;
 				var thumbnail = result.items[0].snippet.thumbnails.medium.url;
-				
+
 				MOS.setMediaHeader(videoTitle,thumbnail,MEDIA_HEADER_LAYOUT_PLAY_PAUSE);
 				MOS.setTitle(videoTitle);
 				$("#thumbnail").show();
 				$("#thumbnail").attr("src",thumbnail);
-				
+
 				//Setup video elements
 				var preloadVideo = document.createElement('video');
 				var ytVideo = document.createElement('video');
@@ -80,11 +75,11 @@
 			var ytdl = require('ytdl-core');
 			var fs = require('fs');
 			yt_stream = ytdl("https://www.youtube.com/watch?v="+yId,{quality:18});
-			
+
 			var preloadvid = document.querySelector("#preload-video");
 			var vid = document.querySelector("#yt-video");
 			var parts = [];
-			
+
 			// Got new data
 			yt_stream.on('data', function(data){
 				parts.push(data);
@@ -95,12 +90,12 @@
 					$("#thumbnail").fadeOut();
 				}
 			});
-			
+
 			yt_stream.on('end', function(){
 				// Display new data in browser!
 				vid.src = (window.URL || window.webkitURL).createObjectURL(new Blob(parts));
 				vid.play();
-				
+
 				setTimeout(function(){
 					vid.currentTime = preloadvid.currentTime+0.36;
 					vid.volume=1;
@@ -112,7 +107,7 @@
 				},1000);
 			});
 		}
-		
+
 		MOS.onGesture = function(gesture){
 			var preloadvid = document.querySelector("#preload-video");
 			var vid = document.querySelector("#yt-video");
@@ -131,9 +126,9 @@
 					}
 				}
 			}
-		}	
-		
+		}
+
 	</script>
   </body>
-  
+
 </html>

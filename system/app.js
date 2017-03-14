@@ -1,5 +1,5 @@
 var SYSTEM_DIR = __dirname;
-var MAIN_DIR = __dirname.replace("/system","");
+var MAIN_DIR = __dirname.replace("system","");
 var APP_DIR = MAIN_DIR+"/apps/";
 
 var appData = [];
@@ -22,7 +22,7 @@ var SensorReader = require('./core/gesture-recognizer/sensor-reader.js');
 window.onload = function(){
 	console.log(__dirname);
 	console.log(MAIN_DIR);
-	
+
 	view = new View();
 
 	// Load config and app info
@@ -38,11 +38,11 @@ window.onload = function(){
 		view.showSplashWithTitle("Something went wrong.<br>Please re-start or re-install if it persists");
 		console.log(err);
 	});
-	
+
 	//Clock
 	view.updateTime();
 	setInterval(view.updateTime,1000);
-	
+
 	//IP address - internet status
 	view.setStatus(getIPAddress());
 	setInterval(function(){
@@ -73,7 +73,7 @@ function launchApp(app,query){
 		if(connectedDevices > 0){
 			webview.send('remoteConnect');
 		}
-	}else{		
+	}else{
 		//If app is not open, open it with query
 		var title = query ? query : "";
 		view.setSubtitle("");
@@ -83,19 +83,19 @@ function launchApp(app,query){
 		if(label!=""){
 			view.showSplashWithTitle(label);
 		}
-		
+
 		currentApp = app;
 		console.log("Launching app "+app.name);
-		
+
 		setMicrophoneEnabled(true);
-		
+
 		readSensorData = false;
-			
+
 		setGestureRecognitionEnabled(false);
 
 		var container = document.querySelector('#content');
 		container.empty();
-		
+
 		var app_url = APP_DIR+app.package+"/index.html";
 
 		var webview = document.createElement('webview');
@@ -105,39 +105,39 @@ function launchApp(app,query){
 		webview.setAttribute('nodeintegration', true);
 		webview.src = app_url;
 		container.appendChild(webview)
-				
+
 		webview.addEventListener("did-startloading",function(){
 			console.log("started loading");
 		});
-		
+
 		socketIO.emit('current-app',getCurrentAppIndex());
-		
+
 		var loaded = false;
 		webview.addEventListener("did-stop-loading",function(){
 			if(!loaded){
-				console.log("App loaded");
-				
 				view.setSubtitle(app.name);
 				view.hideSplash();
-				
+
 				if(query){
 					webview.send('query',query);
 				}
-				
+
 				socketIO.emit('app-launched',getCurrentAppIndex());
 				if(connectedDevices > 0){
 					webview.send('remoteConnect');
 				}
-				
+
 				//webview.openDevTools();
 				loaded = true;
+				console.log("App loaded");
+				webview.send('loadApp',query == undefined || query == null);
 			}
 		});
-		
+
 		webview.addEventListener('console-message', function(e) {
 			console.log(app.name+':', e.message);
 		});
-		
+
 		setupAPI(webview);
 	}
 }
@@ -194,7 +194,7 @@ function setupRemoteAppServer(){
 	connect().use(serveStatic(MAIN_DIR+'/remote_app')).listen(3000, function(){
 		console.log('Server running on 3000...');
 	});
-	
+
 	//Socket server for communication between the remote app and the system
 	console.log("setup socket.io");
 	socketIO = require('socket.io')(8888);
@@ -202,42 +202,42 @@ function setupRemoteAppServer(){
 	socketIO.on('connection', function (socket) {
 		console.log("new client connected");
 		view.showToast("New device connected!");
-		
-		socket.on('query', function (query) { 
+
+		socket.on('query', function (query) {
 			console.log("new query "+query);
 			view.setTitle(query);
 			launchAppWithQuery(query);
 		});
-		
+
 		socket.on('launch-app', function (index) {
 			console.log("Launching app "+index+" from remote app");
 			launchApp(appData[index],null);
 		});
-		
-		socket.on('install-app', function (url) { 
+
+		socket.on('install-app', function (url) {
 			installApp(url);
 		});
-		
-		socket.on('trigger-voice', function () { 
+
+		socket.on('trigger-voice', function () {
 			startVoiceRecognition();
 		});
-		
+
 		socket.emit('app-list',{apps:appData,home_app:home_app_index});
 		socket.emit('current-app',getCurrentAppIndex());
-		
+
 		var webview = document.querySelector("#mainAppView");
 		if(webview){
 			webview.send('remoteConnect');
 		}
 	});
-	
+
 	socketIO.on('disconnect',function(){
 		view.showToast("Device disconnected");
 	});
 }
 
 function listenToAllClients(actionTitle,callback){
-	var sockets = socketIO.sockets.sockets;					
+	var sockets = socketIO.sockets.sockets;
 	for (var key in sockets) {
 	  if (sockets.hasOwnProperty(key)) {
 		sockets[key].on(actionTitle, function (data) {
@@ -290,7 +290,7 @@ function setMicrophoneEnabled(enabled){
 function setGestureRecognitionEnabled(enabled,webview){
 	if(sys_config.motion_sensors == false)
 		return;
-	
+
 	gesturesEnabled = enabled
 	if(enabled){
 		gestureRecognizer = new GestureRecognizer().result(function(gesture){
@@ -309,7 +309,7 @@ function setGestureRecognitionEnabled(enabled,webview){
 function setSensorDataEnabled(enabled,webview){
 	if(sys_config.motion_sensors == false)
 		return;
-		
+
 	readSensorData = enabled;
 	if(enabled){
 		var leftSensorReader = new SensorReader("sensors_raw_left").result(function(data){
@@ -348,15 +348,15 @@ function loadApps(sys_config){
 	var fs = require('fs');
 	var Q = require('q');
 	var path = require('path');
-	
+
 	appData=[];
-	
+
 	function getDirectories(srcpath) {
 	  return fs.readdirSync(srcpath).filter(function(file) {
 		return fs.statSync(path.join(srcpath, file)).isDirectory();
 	  });
 	}
-	
+
 	function readManifest(path){
 		var readFile = Q.denodeify(fs.readFile);
 		var deferred = Q.defer();
@@ -367,10 +367,10 @@ function loadApps(sys_config){
 		});
 		return deferred.promise;
 	}
-	
+
 	var appList = getDirectories(APP_DIR);
 	console.log(appList);
-		
+
 	var deferred = Q.defer();
 	var promises = [];
 	for(var i=0;i<appList.length;i++){
@@ -409,12 +409,12 @@ function loadApps(sys_config){
 }
 
 // Goes through all the installed apps keyword's and finds the matching app
-// TODO: Improve to handle the case where more than one app has the same keyword 
+// TODO: Improve to handle the case where more than one app has the same keyword
 function findAppToLaunchWithQuery(query){
 	for(var i=0;i<appData.length;i++){
 		var app = appData[i];
 		var commands = app.keywords;
-		
+
 		// Find command
 		var j = 0;
 		var commandMatch = commands[j].toLowerCase();
@@ -422,7 +422,7 @@ function findAppToLaunchWithQuery(query){
 			j++;
 			commandMatch = commands[j];
 		}
-		
+
 		if(query.indexOf(commandMatch)>=0){
 			console.log(commandMatch);
 			return app;

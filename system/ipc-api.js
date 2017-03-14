@@ -57,7 +57,8 @@ MirrorOS = function(ipc) {
 			return null;
 		}
 	};
-	
+
+	this.onLoad = function(){};
 	this.onNewQuery = function(){};
 	this.onGesture = function(){};
 	this.onAlertPositiveOption = function(){};
@@ -68,6 +69,10 @@ MirrorOS = function(ipc) {
 }
 
 global.MOS = new MirrorOS(ipc);
+
+ipc.on('loadApp',(event, msg) => {
+	global.MOS.onLoad(msg);
+});
 
 ipc.on('query',(event, msg) => {
 	global.MOS.onNewQuery(msg);
