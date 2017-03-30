@@ -27,7 +27,7 @@ MOS.onNewQuery = function(query){
 MOS.onLoad = function(cleanLaunch){
 	emptyContainer = $("#container").clone();
 	if(cleanLaunch){
-		loadTag("SmartMirror");
+		loadTag("UVicMultimedia");
 	}
 }
 
