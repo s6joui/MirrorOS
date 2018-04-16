@@ -23,8 +23,11 @@ Run
 
 and then
 ```npm start``` to start the program.
+
+Follow the configuration steps below to get everything working.
+
 ## Configuration
-Most apps will need access to API keys from different services to fully work. Edit the config.json file and add your own API keys.
+Most apps will need access to API keys from different services to fully work. Edit the ```config.json``` file and add your own API keys.
 In this file you can also set the default home app and the default assistant app as well as enabling gesture support but this requires you to have the appropiate sensors to work.
 ## Minimunm hardware requirements
 - Raspberry Pi 2 or 3
