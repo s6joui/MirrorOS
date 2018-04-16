@@ -57,6 +57,40 @@ MirrorOS = function(ipc) {
 			return null;
 		}
 	};
+	
+	this.JSONGetRequest = function(url,callback){
+		this.JSONGetRequest(url,null,callback);
+	}
+
+	this.JSONGetRequest = function(url,headers,callback){
+		console.log("Calling "+url);
+		var request = new XMLHttpRequest();
+		request.open('GET', url, true);
+		if(headers){
+			request.setRequestHeader(Object.keys(headers)[0],Object.values(headers)[0]);
+			console.log("Setting headers");
+			console.log(Object.keys(headers)[0]);
+			console.log(Object.values(headers)[0]);
+		}
+		request.onload = function() {
+		  if (this.status >= 200 && this.status < 400) {
+			// Success!
+			var data = JSON.parse(this.response);
+			callback(data);
+		  } else {
+			// We reached our target server, but it returned an error
+			console.log("Request error "+this.status);
+		  }
+		};
+
+		request.onerror = function(e) {
+		  // There was a connection error of some sort
+		  console.log("Request error");
+		  console.log(e);
+		};
+
+		request.send();
+	}
 
 	this.onLoad = function(){};
 	this.onNewQuery = function(){};
@@ -101,3 +135,5 @@ ipc.on('remoteConnect',(event, msg) => {
 ipc.on('sensorData',(event, data, sensorId) => {
 	global.MOS.onSensorData(data,sensorId);
 });
+
+

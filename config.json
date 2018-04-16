@@ -26,6 +26,10 @@
 		"News API":{
 			"value":"",
 			"source":"http://www.newsapi.org"
+		},
+		"YouTube Data API":{
+			"value":"",
+			"source":"https://developers.google.com/youtube/v3/"
 		}
 	}
 }

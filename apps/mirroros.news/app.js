@@ -4,18 +4,16 @@ var currentArticle = -1;
 var articles;
 
 window.onload = function(){
-	
-	emptyContainer = $("#container").clone();
-	$.get("https://newsapi.org/v1/articles?source=engadget&sortBy=latest&apiKey="+apiKey, function(data1) {
-		$.get("https://newsapi.org/v1/articles?source=bbc-sport&sortBy=top&apiKey="+apiKey, function(data2) {
-			$.get("https://newsapi.org/v1/articles?source=associated-press&sortBy=latest&apiKey="+apiKey, function(data3) {
+	emptyContainer = document.getElementById("container").cloneNode(true);
+	MOS.JSONGetRequest("https://newsapi.org/v1/articles?source=engadget&sortBy=latest&apiKey="+apiKey, function(data1) {
+		MOS.JSONGetRequest("https://newsapi.org/v1/articles?source=bbc-sport&sortBy=top&apiKey="+apiKey, function(data2) {
+			MOS.JSONGetRequest("https://newsapi.org/v1/articles?source=associated-press&sortBy=latest&apiKey="+apiKey, function(data3) {
 				articles = mergeArrays({source:"Engadget",data:data1.articles},{source:"BBC Sport",data:data2.articles},{source:"Associated Press",data:data3.articles});
 				preloadImages(articles);
 				loadNextArticle();
 			});
 		});
 	});
-	
 }
 
 function loadNextArticle(){
@@ -40,14 +38,14 @@ function loadNextArticle(){
 	containerEl.style.transform="translateX(0%)";
 	containerEl.style.opacity="1";
 	if(article.urlToImage!=null){
-	imageEl.style.backgroundImage = "url('"+article.urlToImage+"')";
+		imageEl.style.backgroundImage = "url('"+article.urlToImage+"')";
 	}else{
-	$(imageEl).remove();
+		imageEl.remove();
 	}
 	setTimeout(function(){
 		containerEl.className="fade";
 		setTimeout(function(){
-			$(containerEl).remove();
+			containerEl.remove();
 			emptyContainer.clone().appendTo('body');
 			setTimeout(function(){
 				loadNextArticle();
@@ -76,4 +74,15 @@ function mergeArrays(){
     }
   }
   return result;
+}
+
+Element.prototype.remove = function() {
+    this.parentElement.removeChild(this);
+}
+NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
+    for(var i = this.length - 1; i >= 0; i--) {
+        if(this[i] && this[i].parentElement) {
+            this[i].parentElement.removeChild(this[i]);
+        }
+    }
 }

@@ -1,7 +1,9 @@
 {
 	"name" : "MirrorOS",
-	"version" : "0.1.0",
+	"version" : "0.2.0",
 	"main" : "main.js",
+	"repository":"https://github.com/s6joui/MirrorOS",
+	"license":"MIT",
   	"scripts" : {
     		"start": "./system/starter.sh"
     	},

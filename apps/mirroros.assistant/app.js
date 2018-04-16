@@ -38,51 +38,43 @@ function loadResultsForQuery(query){
 	currentQuery = query;
 	console.log(query);
 	
-	var container = $('#grid');
-	var chatContainer = $('#chat-container');
-	container.click(function(){
+	var container = document.getElementById('grid');
+	var chatContainer = document.getElementById('chat-container');
+	container.onclick = function(){
 		showViewer(0);
-	});
-	container.css("top","100%");
-	container.empty();
+	};
+	container.style.top="100%";
+	container.innerHTML = '';
 	container.hide();
-	chatContainer.empty();
+	chatContainer.innerHTML = '';
 	chatContainer.hide();
 	
 	var searchingForPictures = query.indexOf("picture")>=0 || query.indexOf("photos")>=0;
 	if(searchingForPictures){
 		container.show();
-		var params = {
-			// Request parameters
-			"q": query,
-			"count": "35",
-			"offset": "0",
-			"mkt": "en-us",
-			"safeSearch": "Moderate",
-		};
-
-		$.ajax({
-			url: "https://api.cognitive.microsoft.com/bing/v5.0/images/search?" + $.param(params),
-			beforeSend: function(xhrObj){
-				// Request headers
-				xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key",BING_KEY);
-			},
-			type: "GET"
-		}).done(function(result) {
+		
+		var finalQuery = query.replace(/pictures of |photos of|pictures|photos/g, "").trim();
+		var params = "?q="+encodeURIComponent(finalQuery)+"&count=35&offset=0&mkt=en-us&safeSearch=Moderate";
+		var url = "https://api.cognitive.microsoft.com/bing/v7.0/images/search";
+		var header = {"Ocp-Apim-Subscription-Key":BING_KEY};
+		console.log(BING_KEY);
+		MOS.JSONGetRequest(url+params,header,function(result){
 			pictureList = result.value;
 			for(var i = 0;i<pictureList.length;i++){
 				var item = pictureList[i];
-				var picDiv = $("<div class='imageResult' style=\"background-image:url('"+item.thumbnailUrl+"')\"/>");
-				picDiv.appendTo(container);
+				var picDiv = document.createElement("div");
+				picDiv.className = "imageResult";
+				picDiv.style.backgroundImage="url('"+item.thumbnailUrl+"')";
+				container.appendChild(picDiv);
 			}
-			container.css("top","0%");
+			container.style.top="0%";
 		});
 	}else{
 		chatContainer.show();
 		addChatBubble(query+"?",'chat-query');
 		var url = "http://api.wolframalpha.com/v2/query?input="+query+"&appid="+WOLFRAM_KEY+"&output=json";
 		var loader = addChatBubble("...",'chat-loading-answer');
-		$.get(url,function(result){
+		MOS.JSONGetRequest(url,function(result){
 			loader.remove();
 			var data = printWolframData(result);
 		});
@@ -131,8 +123,10 @@ function printWolframData(result){
 }
 
 function addChatBubble(text,className){
-	var el = $("<p class='chat-bubble "+className+"'>"+text+"</p>");
-	$("#chat-container").prepend(el);
+	var el = document.createElement("p");
+	el.className = "chat-bubble";
+	el.textContent = text;
+	chatContainer.insertBefore(el, chatContainer.firstChild);
 	return el;
 }
 
@@ -168,10 +162,10 @@ function showViewer(index){
 	currentPicture = index;
 	console.log(index);
 	viewerOpen = true;
-	var viewer = $('#viewer');
+	var viewer = document.getElementById('viewer');
 	viewer.show();
 	var pic = pictureList[currentPicture];
-	$('#picture').css("background-image","url('"+pic.contentUrl+"')");
+	document.getElementById('picture').style.backgroundImage = "url('"+pic.contentUrl+"')";
 	MOS.setMediaHeader(currentQuery,pic.contentUrl,"image");
 }
 
@@ -191,7 +185,8 @@ function prevPic(){
 
 function hideViewer(){
 	currentPicture = 0;
-	$("#viewer").hide();
+	var viewer = document.getElementById('viewer');
+	viewer.hide();
 	viewerOpen = false;
 }		
 		
@@ -206,4 +201,12 @@ function checkKey(e) {
 			hideViewer();
 		}
 	}
+}
+		
+HTMLElement.prototype.show = function() {
+	this.style.opacity = "1";
+}
+
+HTMLElement.prototype.hide = function() {
+	this.style.opacity = "0";
 }

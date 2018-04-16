@@ -1,13 +1,31 @@
 function getIPAddress(){
-	//set IP
-	var wlanAddress = require('os').networkInterfaces().wlan0;
-	var ethAddress = require('os').networkInterfaces().eth0;
+	
 	var localIP = "No internet";
-	if(wlanAddress){
-		localIP = wlanAddress[0].address
-	}else if(ethAddress){
-		localIP = ethAddress[0].address;
-	}
+
+	var os = require('os');
+	var ifaces = os.networkInterfaces();
+
+	Object.keys(ifaces).forEach(function (ifname) {
+	  var alias = 0;
+
+	  ifaces[ifname].forEach(function (iface) {
+		if ('IPv4' !== iface.family || iface.internal !== false) {
+		  // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+		  return;
+		}
+
+		if (alias >= 1) {
+		  // this single interface has multiple ipv4 addresses
+		  localIP = ifname + ':' + alias + ' ' + iface.address;
+		} else {
+		  // this interface has only one ipv4 adress
+		  localIP = ifname + ' ' + iface.address;
+		}
+		++alias;
+	  });
+	});
+
+	
 	return localIP;
 }
 
@@ -46,3 +64,4 @@ function installAppDependencies(cwd){
     });
 	return deferred.promise;
 }
+

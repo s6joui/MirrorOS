@@ -18,6 +18,13 @@ video{
 	z-index:-1;
 }
 
+#progress{
+  width: 0%;
+  height: 10px;
+  background-color: white;
+  transition: width 0.5s;
+}
+
 #loader{
 	position:absolute;
 	bottom:100px;

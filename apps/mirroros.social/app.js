@@ -1,4 +1,3 @@
-//var twitterApiKey = MOS.getAPIKey("Twitter");
 var emptyContainer;
 var currentArticle = -1;
 var currentTag;
@@ -25,9 +24,9 @@ MOS.onNewQuery = function(query){
 }
 
 MOS.onLoad = function(cleanLaunch){
-	emptyContainer = $("#container").clone();
+	emptyContainer = document.getElementById("container").cloneNode(true);
 	if(cleanLaunch){
-		loadTag("UVicMultimedia");
+		loadTag("Mirror");
 	}
 }
 
@@ -42,12 +41,11 @@ function loadTag(tag){
 			for(var i=0;i<data.length;i++){
 				var post = data[i];
 				articles.push({
-					image : post.display_src,
-					text : post.caption,
+					image : post.node.display_url,
+					text : post.node.edge_media_to_caption.edges ? post.node.edge_media_to_caption.edges[0].node.text : "",
 					source : 'Instagram'
 				})
 			}
-			console.log(articles);
 			if(!playing)
 				loadNextArticle();
 		}
@@ -75,13 +73,14 @@ function loadNextArticle(){
 			if(article.image!=null){
 				imageEl.style.backgroundImage = "url('"+article.image+"')";
 			}else{
-				$(imageEl).remove();
+				imageEl.remove();
 			}
 			setTimeout(function(){
 				containerEl.className="fade";
 				setTimeout(function(){
-					$(containerEl).remove();
-					emptyContainer.clone().appendTo('body');
+					containerEl.remove();
+					var bodyEl = document.getElementsByTagName("body")[0];
+					bodyEl.appendChild(emptyContainer.cloneNode(true));
 					setTimeout(function(){
 						loadNextArticle();
 					},50);
@@ -115,4 +114,15 @@ function mergeArrays(){
     }
   }
   return result;
+}
+
+Element.prototype.remove = function() {
+    this.parentElement.removeChild(this);
+}
+NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
+    for(var i = this.length - 1; i >= 0; i--) {
+        if(this[i] && this[i].parentElement) {
+            this[i].parentElement.removeChild(this[i]);
+        }
+    }
 }

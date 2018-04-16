@@ -15,11 +15,11 @@ HTMLElement.prototype.text = function(text) {
 }
 
 HTMLElement.prototype.show = function() {
-    this.style.opacity = "0";
+    this.style.opacity = "1";
 }
 
 HTMLElement.prototype.hide = function() {
-    this.style.opacity = "1";
+    this.style.opacity = "0";
 }
 
 HTMLElement.prototype.fadeOut = function(ms) {

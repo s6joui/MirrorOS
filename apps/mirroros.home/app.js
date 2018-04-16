@@ -1,13 +1,22 @@
+var clockEl;
+var dateEl;
+var weatherEl;
+var feedEl;
 
 window.onload = function(){
 	MOS.setTitle("Welcome! Clap to begin");
 
-	setTime();
-	setInterval(setTime,1000);
-
 	var notesString = localStorage.getItem("notes");
 	var notes = notesString ? JSON.parse(notesString) : [];
 		
+	weatherEl = document.getElementById("weather");
+	dateEl = document.getElementById("date");
+	clockEl = document.getElementById("clock");
+	feedEl = document.getElementById("feed");
+		
+	setTime();
+	setInterval(setTime,1000);
+	
 	for(var i=0;i<notes.length;i++){
 		console.log(notes[i]);
 		drawNote(notes[i]);
@@ -15,18 +24,18 @@ window.onload = function(){
 	
 	var apiKey = MOS.getAPIKey("Forecast.io");
 	if(apiKey){
-		$.get("https://maps.googleapis.com/maps/api/browserlocation/json?browser=chromium&sensor=true",function(result){
+		MOS.JSONGetRequest("https://maps.googleapis.com/maps/api/browserlocation/json?browser=chromium&sensor=true",function(result){
 			console.log(result);
-			$.get("https://api.forecast.io/forecast/"+apiKey+"/"+result.location.lat+","+result.location.lng+"?units=si",function(result){
+			MOS.JSONGetRequest("https://api.forecast.io/forecast/"+apiKey+"/"+result.location.lat+","+result.location.lng+"?units=si",function(result){
 				var weather = result;
 				var temp = weather.currently.temperature;
 				var summary = weather.currently.summary;
-				$("#weather").text(temp.toFixed(1)+"°C | "+summary);
+				weatherEl.textContent = temp.toFixed(1)+"°C | "+summary;
 				drawIcon(weather.currently.icon);
 			});
 		});
 	}else{
-		$("#weather").text("Missing API key for weather");
+		weatherEl.textContent = "Missing API key for weather";
 	}
 }
 
@@ -42,8 +51,8 @@ function setTime(){
 	var dt = new Date();
 	var minutes = (""+dt.getMinutes()).length>1 ? dt.getMinutes() : "0"+dt.getMinutes();
 	var time = dt.getHours() + ":" + minutes;
-	$("#clock").text(time);
-	$("#date").text(dt.toDateString());
+	clockEl.textContent = time;
+	dateEl.textContent = dt.toDateString();
 }
 
 MOS.onNewQuery = function(query){
@@ -65,7 +74,7 @@ function parseReminder(query){
 	var toIndex = query.indexOf(" to ")+1;
 	if(removeIndex>0){
 		localStorage.setItem("notes","[]");
-		$("#feed").empty();
+		feedEl.innerHTML = '';
 	}else if(inIndex > 0){
 		var time = query.substring(inIndex+3,query.length);
 		var text = query.substring(toIndex+3,inIndex-1);
@@ -104,7 +113,11 @@ function createReminder(text,time){
 }
 
 function drawNote(noteText,isReminder){
-	var noteDiv = $("<div class='note'>"+noteText+"</div>").prependTo("#feed").fadeIn(2000);
+	
+	var noteDiv = document.createElement("div");
+	noteDiv.className = "note";
+	feed.insertBefore(noteDiv, feed.firstChild);
+
 	if(isReminder){
 		setTimeout(function(){
 			noteDiv.addClass("reminder");
@@ -114,7 +127,7 @@ function drawNote(noteText,isReminder){
 
 function clearNotes(){
 	localStorage.removeItem("notes");
-	$("#feed").empty();
+	feedEl.innerHTML = '';
 }
 
 /*MOS.showAlert("Hello","Hold right",10);

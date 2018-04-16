@@ -13,11 +13,11 @@ var IntagramAPI = function() {
             });
             http_res.on("end", function () {
 				var json = JSON.parse(data);
-				if(json.tag.media.nodes){
-					if(json.tag.media.nodes.length>0){
-						callback(tag,json.tag.media.nodes);
-					}else if(json.tag.top_posts){
-						callback(tag,json.tag.top_posts.nodes);
+				if(json.graphql.hashtag.edge_hashtag_to_media){
+					if(json.graphql.hashtag.edge_hashtag_to_media.length>0){
+						callback(tag,json.graphql.hashtag.edge_hashtag_to_media.edges);
+					}else if(json.graphql.hashtag.edge_hashtag_to_top_posts){
+						callback(tag,json.graphql.hashtag.edge_hashtag_to_top_posts.edges);
 					}else{
 						console.log("No data found");
 						callback(tag,[]);

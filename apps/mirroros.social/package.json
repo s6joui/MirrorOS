@@ -2,6 +2,6 @@
 	"name" : "Social",
 	"version" : "1.0.0",
 	"dependencies" : {
-		"follow-redirects":"1.2.3"
+		"follow-redirects":"~1.2.3"
 	}
 }

@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <title>YouTube</title>
     <link rel="stylesheet" href="style.css" />
-    <script type="text/javascript" src="jquery-2.1.4.min.js"></script>
-    <script type="text/javascript">
-		window.$ = window.jQuery = require('./jquery-2.1.4.min.js');
-	</script>
-  </head>
   <body>
 	<div id="loader">
 		<img src="loader.gif" width="150" />
 	</div>
+	<div id="progress"></div>
 	<img id="thumbnail" width="100%">
 	<div id="container">
 	</div>
 	<script type="text/javascript">
-		var loader = $('#loader');
+	
+		var YOUTUBE_SEARCH_KEY = MOS.getAPIKey("YouTube Data API");
+
+		var loader = document.getElementById('loader');
+		var progressEl = document.getElementById("progress");
 		var yt_stream;
 
 		MOS.setGestureRecognitionEnabled(true);
@@ -44,27 +44,36 @@
 				yt_stream.destroy();
 			loader.show();
 			MOS.setTitle(query);
-			var container = $('#container');
-			container.empty();
+			var container = document.getElementById('container');
+			container.innerHTML = '';
             var finalQuery = query.replace(/youtube|video of /g, "");
-			$.get("https://www.googleapis.com/youtube/v3/search",{part:"snippet",maxResults:1,safeSearch:"none",type:"video",key:"AIzaSyBVZHM3HBJd4Ol1xzghY21F3WxTHHrI9q8",q:finalQuery},function(result){
+			var endpoint = "https://www.googleapis.com/youtube/v3/search";
+			var params = "?q="+encodeURIComponent(finalQuery)+"&part=snippet&maxResults=1&safeSearch=none&type=video&key="+YOUTUBE_SEARCH_KEY;
+			MOS.JSONGetRequest(endpoint+params,function(result){
 				var yid = result.items[0].id.videoId;
 				var videoTitle = result.items[0].snippet.title;
 				var thumbnail = result.items[0].snippet.thumbnails.medium.url;
 
 				MOS.setMediaHeader(videoTitle,thumbnail,MEDIA_HEADER_LAYOUT_PLAY_PAUSE);
 				MOS.setTitle(videoTitle);
-				$("#thumbnail").show();
-				$("#thumbnail").attr("src",thumbnail);
+				var thumbnail = document.getElementById("thumbnail");
+				thumbnail.show();
+				thumbnail.setAttribute("src",thumbnail);
 
 				//Setup video elements
 				var preloadVideo = document.createElement('video');
 				var ytVideo = document.createElement('video');
-				$(preloadVideo).attr('id',"preload-video");
-				$(ytVideo).attr('id',"yt-video");
-				$(ytVideo).prop('loop',true);
-				$(preloadVideo).appendTo(container)
-				$(ytVideo).appendTo(container)
+				preloadVideo.setAttribute('id',"preload-video");
+				ytVideo.setAttribute('id',"yt-video");
+				ytVideo.setAttribute('loop',true);
+
+				ytVideo.ontimeupdate = function() {
+					var percentage = Math.floor((100 / ytVideo.duration) * ytVideo.currentTime);
+					progressEl.style.width = percentage+"%";
+				};
+				
+				container.appendChild(preloadVideo);
+				container.appendChild(ytVideo);
 
 				//Stream video
 				setupYoutubeDownloader(yid);
@@ -87,7 +96,8 @@
 					preloadvid.src = (window.URL || window.webkitURL).createObjectURL(new Blob(parts));
 					preloadvid.play();
 					loader.hide();
-					$("#thumbnail").fadeOut();
+					var thumbnail = document.getElementById("thumbnail");
+					thumbnail.hide();
 				}
 			});
 
@@ -107,7 +117,7 @@
 				},1000);
 			});
 		}
-
+		
 		MOS.onGesture = function(gesture){
 			var preloadvid = document.querySelector("#preload-video");
 			var vid = document.querySelector("#yt-video");
@@ -126,6 +136,14 @@
 					}
 				}
 			}
+		}
+		
+		HTMLElement.prototype.show = function() {
+			this.style.opacity = "1";
+		}
+
+		HTMLElement.prototype.hide = function() {
+			this.style.opacity = "0";
 		}
 
 	</script>
