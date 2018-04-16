@@ -7,22 +7,30 @@
 MirrorOS is a new platform for smart mirrors that focuses mainly in interactivity featuring voice commands and a smarthpone remote app. It runs web apps which are easy to build and has a set of APIs that developers can use to easily integrate voice commands and smartphone remote control.
 
 **NOTE**: This project is in a very early phase. You can expect bugs and crashes. It has been tested on Raspberry Pi 2 and 3.
-## Installation
-Install pyaudio
+## Setup
 
-```sudo apt-get install python-pyaudio python3-pyaudio```
+### Dependencies
+NPM v2 or greater: (https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions)
+```
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+sudo apt-get install -y nodejs
+````
+Pyaudio: 
+```
+sudo apt-get install python-pyaudio python3-pyaudio
+```
 
-Clone repo
+### Installation
+```
+# Clone the repository
+git clone https://github.com/s6joui/MirrorOS
 
-```git clone https://github.com/s6joui/MirrorOS```
+# Go into the repository
+cd MirrorOS
 
-Run 
-
-```cd MirrorOS```
-```npm install```
-
-and then
-```npm start``` to start the program.
+# Install node dependencies and run
+npm install && npm start
+```
 
 Follow the configuration steps below to get everything working.
 To test the different apps I recommend using the remote control smartphone app described below.
