@@ -17,9 +17,12 @@ Clone repo
 ```git clone https://github.com/s6joui/MirrorOS```
 
 Run 
+
+```cd MirrorOS```
 ```npm install```
+
 and then
-```npm start```
+```npm start``` to start the program.
 ## Configuration
 Most apps will need access to API keys from different services to fully work. Edit the config.json file and add your own API keys.
 In this file you can also set the default home app and the default assistant app as well as enabling gesture support but this requires you to have the appropiate sensors to work.
