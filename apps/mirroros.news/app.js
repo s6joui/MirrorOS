@@ -5,9 +5,9 @@ var articles;
 
 window.onload = function(){
 	emptyContainer = document.getElementById("container").cloneNode(true);
-	MOS.JSONGetRequest("https://newsapi.org/v1/articles?source=engadget&sortBy=latest&apiKey="+apiKey, function(data1) {
-		MOS.JSONGetRequest("https://newsapi.org/v1/articles?source=bbc-sport&sortBy=top&apiKey="+apiKey, function(data2) {
-			MOS.JSONGetRequest("https://newsapi.org/v1/articles?source=associated-press&sortBy=latest&apiKey="+apiKey, function(data3) {
+	MOS.JSONGetRequest("https://newsapi.org/v1/articles?source=engadget&sortBy=latest&apiKey="+apiKey,null, function(data1) {
+		MOS.JSONGetRequest("https://newsapi.org/v1/articles?source=bbc-sport&sortBy=top&apiKey="+apiKey,null, function(data2) {
+			MOS.JSONGetRequest("https://newsapi.org/v1/articles?source=associated-press&sortBy=latest&apiKey="+apiKey,null, function(data3) {
 				articles = mergeArrays({source:"Engadget",data:data1.articles},{source:"BBC Sport",data:data2.articles},{source:"Associated Press",data:data3.articles});
 				preloadImages(articles);
 				loadNextArticle();

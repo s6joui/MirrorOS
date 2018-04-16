@@ -24,9 +24,9 @@ window.onload = function(){
 	
 	var apiKey = MOS.getAPIKey("Forecast.io");
 	if(apiKey){
-		MOS.JSONGetRequest("https://maps.googleapis.com/maps/api/browserlocation/json?browser=chromium&sensor=true",function(result){
+		MOS.JSONGetRequest("https://maps.googleapis.com/maps/api/browserlocation/json?browser=chromium&sensor=true",null,function(result){
 			console.log(result);
-			MOS.JSONGetRequest("https://api.forecast.io/forecast/"+apiKey+"/"+result.location.lat+","+result.location.lng+"?units=si",function(result){
+			MOS.JSONGetRequest("https://api.forecast.io/forecast/"+apiKey+"/"+result.location.lat+","+result.location.lng+"?units=si",null,function(result){
 				var weather = result;
 				var temp = weather.currently.temperature;
 				var summary = weather.currently.summary;

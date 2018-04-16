@@ -58,10 +58,6 @@ MirrorOS = function(ipc) {
 		}
 	};
 	
-	this.JSONGetRequest = function(url,callback){
-		this.JSONGetRequest(url,null,callback);
-	}
-
 	this.JSONGetRequest = function(url,headers,callback){
 		console.log("Calling "+url);
 		var request = new XMLHttpRequest();

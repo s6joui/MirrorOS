@@ -74,7 +74,7 @@ function loadResultsForQuery(query){
 		addChatBubble(query+"?",'chat-query');
 		var url = "http://api.wolframalpha.com/v2/query?input="+query+"&appid="+WOLFRAM_KEY+"&output=json";
 		var loader = addChatBubble("...",'chat-loading-answer');
-		MOS.JSONGetRequest(url,function(result){
+		MOS.JSONGetRequest(url,null,function(result){
 			loader.remove();
 			var data = printWolframData(result);
 		});

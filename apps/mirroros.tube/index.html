@@ -49,7 +49,7 @@
             var finalQuery = query.replace(/youtube|video of /g, "");
 			var endpoint = "https://www.googleapis.com/youtube/v3/search";
 			var params = "?q="+encodeURIComponent(finalQuery)+"&part=snippet&maxResults=1&safeSearch=none&type=video&key="+YOUTUBE_SEARCH_KEY;
-			MOS.JSONGetRequest(endpoint+params,function(result){
+			MOS.JSONGetRequest(endpoint+params,null,function(result){
 				var yid = result.items[0].id.videoId;
 				var videoTitle = result.items[0].snippet.title;
 				var thumbnail = result.items[0].snippet.thumbnails.medium.url;
