@@ -25,6 +25,7 @@ and then
 ```npm start``` to start the program.
 
 Follow the configuration steps below to get everything working.
+To test the different apps I recommend using the remote control smartphone app described below.
 
 ## Configuration
 Most apps will need access to API keys from different services to fully work. Edit the ```config.json``` file and add your own API keys.
