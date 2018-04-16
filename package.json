@@ -6,12 +6,12 @@
     		"start": "./system/starter.sh"
     	},
 	"dependencies" : {
-		"connect":"3.6.6",
-		"serve-static":"1.13.2",
-		"socket.io":"1.7.4",
-		"q":"1.5.1",
-		"unzip":"0.1.11",
-		"ncp":"2.0.0",
-		"electron":"1.4.5"
+		"connect":"~3.6.6",
+		"serve-static":"~1.13.2",
+		"socket.io":"~1.7.4",
+		"q":"~1.5.1",
+		"unzip":"~0.1.11",
+		"ncp":"~2.0.0",
+		"electron":"^2.0.0-beta.7"
 	}
 }
