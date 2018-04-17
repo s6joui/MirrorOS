@@ -25,9 +25,7 @@ window.onload = function(){
 
 	view = new View();
 
-	// Load config and app info
-	sys_config = require('../config.json');
-	console.log(sys_config);
+	sys_config = loadConfig();
 	loadApps(sys_config).then(function(appDataList){
 		appData = appDataList;
 		setupSpeechRecognition();
@@ -342,6 +340,30 @@ function installApp(url){
 	},function(error){
 		view.showToast(error);
 	});
+}
+
+function loadConfig(){
+	var filePath = MAIN_DIR+'/config.json';
+	var filePathExample = MAIN_DIR+'/config.json.example';
+	var fs = require('fs');
+	var config = {
+		home_app:"mirroros.home",
+		assistant_app:"mirroros.assistant"
+	}; 
+	if (fs.existsSync(filePath)) {
+		console.log("exists");
+		config = require(filePath);
+	}else if(fs.existsSync(filePathExample)) {
+		console.log("not exists");
+		config = fs.readFileSync(filePathExample).toString();;
+		fs.writeFileSync(filePath,config, null, '\t');
+		config = JSON.parse(config);
+	}else{
+		console.log("not exists");
+		fs.writeFileSync(filePath,JSON.stringify(config, null, '\t'));
+	}
+	console.log(config);
+	return config;
 }
 
 function loadApps(sys_config){

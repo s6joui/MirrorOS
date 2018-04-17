@@ -12,7 +12,7 @@
 			"source":"http://forecast.io"
 		},
 		"Bing Image Search":{
-			"value":"c6c64eb06bab40acb6d034f0be2779ec",
+			"value":"",
 			"source":"https://www.microsoft.com/cognitive-services/en-us/bing-image-search-api"
 		},
 		"WolframAlpha":{
@@ -28,7 +28,7 @@
 			"source":"http://www.newsapi.org"
 		},
 		"YouTube Data API":{
-			"value":"AIzaSyBVZHM3HBJd4Ol1xzghY21F3WxTHHrI9q8",
+			"value":"",
 			"source":"https://developers.google.com/youtube/v3/"
 		}
 	}
