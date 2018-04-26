@@ -4,7 +4,7 @@
   <img src="https://raw.githubusercontent.com/s6joui/MirrorOS/master/logo.png" alt="MirrorOS"/>
 </p>
 
-MirrorOS is a new platform for smart mirrors that focuses mainly in interactivity featuring voice commands and a smarthpone remote app. It runs web apps which are easy to build and has a set of APIs that developers can use to easily integrate voice commands and smartphone remote control.
+MirrorOS is a new platform for smart mirrors built on Electron that focuses mainly in interactivity featuring voice commands and a smarthpone remote app. It runs web apps which are easy to build and has a set of APIs that developers can use to easily integrate voice commands and smartphone remote control.
 
 **NOTE**: This project is in a very early phase. You can expect bugs and crashes. It has been tested on Raspberry Pi 2 and 3.
 ## Setup
