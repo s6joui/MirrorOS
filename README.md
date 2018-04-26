@@ -39,8 +39,7 @@ To test the different apps I recommend using the remote control smartphone app d
 Most apps will need access to API keys from different services to fully work. Edit the ```config.json``` file and add your own API keys.
 In this file you can also set the default home app and the default assistant app as well as enabling gesture support but this requires you to have the appropiate sensors to work.
 ## Minimunm hardware requirements
-- Raspberry Pi 2 or 3
-- USB microphone
+- Raspberry Pi 2 or later
 
 ## Remote control
 You can control MirrorOS from any device that has a browser by going to the IP address that's shown on the top left of the screen. It's specially useful with a smartphone.
